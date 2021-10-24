@@ -1,0 +1,9 @@
+.Courses li {
+    list-style-type: none;
+}
+
+.Courses-search-container {
+    display:flex;
+    justify-content: space-around;
+    padding: 10px;
+}

@@ -1,0 +1,16 @@
+.Header-component {
+padding: 10px;
+width: 1270px;
+margin: 0 auto 0 auto;
+display: -webkit-box;
+display: flex;
+-webkit-box-pack: justify;
+justify-content: space-between;
+-webkit-box-align: center;
+align-items: center;
+}
+
+.Header-component-wrapper {
+    width: 100%;
+    background-color: rgb(232, 230, 248);
+}

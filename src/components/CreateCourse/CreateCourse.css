@@ -1,0 +1,74 @@
+.font-larger {
+    font-size: larger;
+}
+
+.font-x-large {
+    font-size: x-large;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.CreateCourse {
+    width: 1270px;
+    margin: 0 auto 0 auto;
+}
+.CreateCourse .flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.CreateCourse label {
+    display: block;
+}
+
+.CreateCourse label input {
+    display: block;
+}
+
+.CreateCourse li {
+    list-style-type: none;
+}
+
+.CreateCourse .container{
+    padding: 10px;
+}
+
+.CreateCourse .description textarea {
+    width: 100%;
+}
+
+.CreateCourse form section {
+    width: 100%;
+    background-color: azure;
+}
+
+.CreateCourse form section .column {
+    width: 600px;
+}
+
+.CreateCourse section h3 {
+    text-align: center;
+}
+
+.CreateCourse section input {
+    width: 100%;
+}
+
+.CreateCourse section .duration p {
+    display: inline;
+}
+
+.CreateCourse .author-name {
+    width: 200px;
+    margin-right: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.flex-center-wrapper {
+    display: flex;
+    justify-content: center;
+}

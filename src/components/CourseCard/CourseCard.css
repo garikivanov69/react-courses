@@ -1,0 +1,45 @@
+.CourseCard {
+    padding: 10px;
+    width: 1200px;
+    margin: 2px auto 2px auto;
+    background-color: azure;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+    }
+
+.CourseCard dl {
+    width: 300px;
+}
+
+.CourseCard dt {
+    font-weight: 500;
+    margin: 0 10px 0 0;
+    float: left;
+	clear: both;
+}
+
+.authors {
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.CourseCard dt:after {
+	content: ":";
+}
+
+.CourseCard-title-description {
+    width: 600px;
+}
+
+.CourseCard-title-description p {
+    -webkit-line-clamp: 4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
