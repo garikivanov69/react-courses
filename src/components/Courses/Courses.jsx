@@ -5,12 +5,14 @@ import './Courses.css';
 import { Link } from 'react-router-dom';
 import Button from '../Button/Button';
 import{CoursesContext} from '../../index.js';
+import {useFormattingTimeFromMins} from '../../courseUtils.js'
+
 
 
 function Courses(props) {
     const repository = useContext(CoursesContext);
     const [arrayOfCourses, setArrayOfCourses] = useState(repository.mockedCoursesList);
-
+    const getTimeFromMins = useFormattingTimeFromMins();
 
     let getAuthors = function (course) {
         let res = '';
@@ -22,28 +24,20 @@ function Courses(props) {
                 }
             }
         }
-        return res.replace(/,\s*$/, "");;
+        return res.replace(/,\s*$/, "");
     };
-
-    let getTimeFromMins = function (mins) {
-        let hours = Math.trunc(mins/60);
-        let minutes = mins % 60;
-        return hours + ':' + minutes + ' hours';
-    };
-
-
 
     return ( 
         <div>
             <div className="Courses-search-container">
                 <Search setSearchResult={setArrayOfCourses} dataList={repository.mockedCoursesList}/>
-                <Link to="/create/course" ><Button text="Create course" /></Link>
+                <Link to="/courses/add" ><Button text="Create course" /></Link>
             </div>
             <div>
                 <ul className="Courses">
                     {arrayOfCourses.map((course) => 
                         <li key={course.id}>
-                            <CourseCard title={course.title} description={course.description} duration={getTimeFromMins(course.duration)} creationDate={course.creationDate} authors={getAuthors(course)} />
+                            <CourseCard id={course.id} title={course.title} description={course.description} duration={getTimeFromMins(course.duration)} creationDate={course.creationDate} authors={getAuthors(course)} />
                         </li>)}
                 </ul>
             </div>

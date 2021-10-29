@@ -52,7 +52,7 @@ export let mockedCoursesList = [
   id: '095a1817-d45b-4ed7-9cf7-b2417bcbf748',
   name: 'Valentina Larina'
   },
- ]
+ ];
 
 export const CoursesContext = createContext();
 

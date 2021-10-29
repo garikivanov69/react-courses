@@ -4,8 +4,12 @@ import{CoursesContext} from '../../index.js';
 import Button from '../Button/Button.jsx';
 import Input from '../Input/Input.jsx';
 import './CreateCourse.css';
+import {useFormattingTimeFromMins} from '../../courseUtils.js';
+import { useHistory } from "react-router-dom";
+
 
 function CreateCourse(props) {
+    let history = useHistory();
     const [duration, setDuration] = useState(0);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -15,6 +19,7 @@ function CreateCourse(props) {
     const [authorList, setAuthorList] = useState(repository.mockedAuthorsList);
 
     const [choosenAuthors, chooseAuthor] = useReducer(actionDispatch, []);
+    const formatDuration = useFormattingTimeFromMins();
 
     function actionDispatch(choosenAuthors, data) {
         switch(data.actionType) {
@@ -39,12 +44,6 @@ function CreateCourse(props) {
         return resultArray;
     };
 
-    function formatDuration (mins) {
-        let hours = Math.trunc(mins/60);
-        let minutes = mins % 60;
-        return hours + ':' + minutes;
-    };
-
     function createCourse (event) {
         event.preventDefault();
         if (title && description && duration && choosenAuthors.length) {         
@@ -59,7 +58,7 @@ function CreateCourse(props) {
                 authors: choosenAuthors.map((author) => author.id)
             };
             repository.mockedCoursesList.push(newCourse);
-            props.history.push('/');
+            history.push('/courses');
             return;
         }
         alert('Please, fill in all fields of a new course');

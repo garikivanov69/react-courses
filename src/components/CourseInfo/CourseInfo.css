@@ -1,0 +1,41 @@
+.CourseInfo {
+    width: 1270px;
+    margin: 10px auto 0 auto;
+}
+
+.CourseInfo h1 {
+    text-align: center;
+}
+
+.CourseInfo .flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.CourseInfo .course-description {
+    width: 600px;
+}
+
+.CourseInfo .course-addition-info {
+    width: 500px;
+}
+
+.CourseInfo dl {
+    width: 300px;
+}
+
+.CourseInfo dt {
+    font-weight: 500;
+    margin: 0 10px 0 0;
+    float: left;
+	clear: both;
+}
+
+.CourseInfo dt:after {
+	content: ":";
+}
+
+.CourseInfo li {
+    list-style-type: none;
+}

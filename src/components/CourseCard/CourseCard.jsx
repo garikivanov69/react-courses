@@ -1,6 +1,9 @@
 import React from 'react';
 import Button from '../Button/Button';
 import './CourseCard.css';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 
 function CourseCard(props) {
     return ( 
@@ -14,14 +17,23 @@ function CourseCard(props) {
                     <dt>Authors</dt>
                     <dd className="authors">{props.authors}</dd>
                     <dt>Duration</dt>
-                    <dd>{props.duration}</dd>
+                    <dd>{props.duration} hours</dd>
                     <dt>Created</dt>
                     <dd>{props.creationDate}</dd>
                 </dl>
-                <Button text="Show course" />
+                <Link to={"/courses/" + props.id} ><Button text="Show course" /></Link>
             </div>
         </div>
      );
+}
+
+CourseCard.propTypes = {
+    title: PropTypes.node,
+    description: PropTypes.node,
+    authors: PropTypes.node,
+    duration: PropTypes.node,
+    creationDate: PropTypes.node,
+    id: PropTypes.any.isRequired
 }
 
 export default CourseCard;

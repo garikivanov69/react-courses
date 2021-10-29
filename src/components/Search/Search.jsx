@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 import './Search.css';
+import PropTypes from 'prop-types';
+
 
 function Search(props) {
     const [searchKey, setSearchKey] = useState('');
@@ -20,10 +22,15 @@ function Search(props) {
     };
 
     let handleSearchInput = (event) => {
-        setSearchKey(event.target.value);
-        if (!event.target.value) {
-            props.setSearchResult(props.dataList);
+        const dataList = props.dataList;
+        let resultList = [];
+        for (let i = 0; i < dataList.length; i++) {
+            if (dataList[i].title.toLowerCase().includes(event.target.value.toLowerCase()) || dataList[i].id === searchKey) {
+                resultList.push(dataList[i]);
+            }
         }
+        setSearchKey(event.target.value);
+        props.setSearchResult(resultList);
     };
 
     return ( 
@@ -32,6 +39,11 @@ function Search(props) {
             <Button text="Search" />
         </form>
      );
+}
+
+Search.propTypes = {
+    setSearchResult: PropTypes.func,
+    dataList: PropTypes.array
 }
 
 export default Search;

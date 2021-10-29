@@ -1,0 +1,32 @@
+.Login-form {
+    width: 400px;
+    margin: 0 auto 0 auto;
+}
+
+.Login-form button {
+    text-align: center;
+    display: block;
+    margin: 20px auto 20px auto;
+}
+
+.Login-form form h1 {
+    text-align: center;
+}
+
+.Login-form form div {
+    text-align: center;
+}
+
+.Login-form form label input {
+    width: 100%;
+}
+
+.Login-form a {
+    text-decoration: none;
+    color: rgba(0, 140, 255, 0.863);
+}
+
+.error-message {
+    color: red;
+    font-weight: bolder;
+}
