@@ -3,7 +3,8 @@ import './Registration.css';
 import Input from '../Input/Input';
 import Button from '../Button/Button';
 import { Link } from 'react-router-dom';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
+import { registrationService } from '../../store/servises';
 
 
 function Registration(props) {
@@ -13,27 +14,25 @@ function Registration(props) {
     const [errorMessages, setErrorMessages] = useState([]);
 
     let history = useHistory();
+
+    function successCallback() {
+        history.push('/login');
+    };
+
+    function emptyDataCallback(data) {
+        data ? setErrorMessages(data.errors) : setErrorMessages(['Registration process failed']);
+    };
+
+    function errorCallback() {
+        setErrorMessages(['Registration process failed']);
+    }
     
     function register(event) {
         event.preventDefault();
         
         if(name && password && email) {
             const newUser = {name, password, email};
-
-            fetch('http://localhost:3000/register', {
-                method: 'POST',
-                body: JSON.stringify(newUser),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then((response) => response.json()).then((data) => {
-                if (data && data.successful) {
-                    history.push('/login');
-                } else {
-                    data ? setErrorMessages(data.errors) : setErrorMessages(['Registration process failed']);
-                }
-            }).catch((error) => setErrorMessages(['Registration process failed']));
-
+            registrationService(newUser, successCallback, emptyDataCallback, errorCallback);
         } else {
             setErrorMessages(['Please, fill in all fields']);
         }

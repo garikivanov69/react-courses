@@ -4,17 +4,19 @@ import Button from '../Button/Button';
 import Logo from '../Logo/Logo';
 import { useHistory } from "react-router-dom";
 import PropTypes from 'prop-types';
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { createActionDeleteUser } from '../../store/user/actionCreators';
+import { selectUser } from '../../store/selectors';
 
 function Header(props) {
+    let user = useSelector(selectUser);
     let history = useHistory();
+    const dispatch = useDispatch();
 
     function logout(event) {
         event.preventDefault();
-        localStorage.removeItem('courses-user-token');
-        localStorage.removeItem('courses-user-name');
-        props.setUserToken('');
+        localStorage.removeItem('courses-user');
+        dispatch(createActionDeleteUser());
         history.push("/login");
     };
 
@@ -22,15 +24,14 @@ function Header(props) {
         <div className="Header-component-wrapper">
             <div className="Header-component">
                 <Logo path={props.logoPath} />
-                {props.userToken ? localStorage.getItem('courses-user-name') : ''}
-                {props.userToken ? <Button text="Logout" onClick={logout} /> : ''}
+                {user.token ? 'Hello ' + user.name : ''}
+                {user.token ? <Button text="Logout" onClick={logout} /> : ''}
             </div>
         </div>
      );
 }
 
 Header.propTypes = {
-    userToken: PropTypes.node,
     logoPath: PropTypes.string
 }
 

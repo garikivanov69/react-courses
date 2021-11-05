@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
 import './Search.css';
@@ -6,44 +6,27 @@ import PropTypes from 'prop-types';
 
 
 function Search(props) {
-    const [searchKey, setSearchKey] = useState('');
 
     let searchCourse = (event) => {
         event.preventDefault();
-        const dataList = props.dataList;
-        let resultList = [];
-        for (let i = 0; i < dataList.length; i++) {
-            if (dataList[i].title.toLowerCase().includes(searchKey.toLowerCase()) || dataList[i].id === searchKey) {
-                resultList.push(dataList[i]);
-            }
-        }
-        props.setSearchResult(resultList);
-        
+        props.setSearchKey(event.target.value);        
     };
 
     let handleSearchInput = (event) => {
-        const dataList = props.dataList;
-        let resultList = [];
-        for (let i = 0; i < dataList.length; i++) {
-            if (dataList[i].title.toLowerCase().includes(event.target.value.toLowerCase()) || dataList[i].id === searchKey) {
-                resultList.push(dataList[i]);
-            }
-        }
-        setSearchKey(event.target.value);
-        props.setSearchResult(resultList);
+        props.setSearchKey(event.target.value);
     };
 
     return ( 
         <form className="Search" onSubmit={searchCourse}>
-            <Input value={searchKey} handleChange={handleSearchInput} placeholder="Enter course name or id..."/>
+            <Input value={props.searchKey} handleChange={handleSearchInput} placeholder="Enter course name or id..."/>
             <Button text="Search" />
         </form>
      );
 }
 
 Search.propTypes = {
-    setSearchResult: PropTypes.func,
-    dataList: PropTypes.array
+    setSearchKey: PropTypes.func,
+    searchKey: PropTypes.node
 }
 
 export default Search;

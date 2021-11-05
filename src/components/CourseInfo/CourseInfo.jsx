@@ -1,15 +1,19 @@
 import React from 'react';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '../Button/Button';
 import { Link, useParams } from 'react-router-dom';
-import{CoursesContext} from '../../index.js';
 import { useHistory } from "react-router-dom";
 import './CourseInfo.css';
-import {useFormattingTimeFromMins} from '../../courseUtils.js'
+import {useFormattingTimeFromMins} from '../../courseUtils.js';
+import { useSelector } from 'react-redux';
+
+const selectCourses = state => state.courses;
+const selectAuthors = state => state.authors;
 
 
 function CourseInfo(props) {
-    const repository = useContext(CoursesContext);
+    let courses = useSelector(selectCourses);
+    let authorsRepository = useSelector(selectAuthors);
     const [course, setCourse] = useState({});
     const [authors, setAuthors] = useState([]);
     let { idCourse } = useParams();
@@ -19,11 +23,10 @@ function CourseInfo(props) {
 
     let getAuthors = function (course) {
         let res = [];
-        console.log(course.authors);
         for (let i = 0; i < course.authors.length; i++) {
-            for (let j = 0; j < repository.mockedAuthorsList.length; j++) {
-                if (course.authors[i] === repository.mockedAuthorsList[j].id) {
-                    res.push(repository.mockedAuthorsList[j]);
+            for (let j = 0; j < authorsRepository.length; j++) {
+                if (course.authors[i] === authorsRepository[j].id) {
+                    res.push(authorsRepository[j]);
                     break;
                 }
             }
@@ -32,10 +35,9 @@ function CourseInfo(props) {
     };
     
     useEffect(() => {
-        let courseInfo = repository.mockedCoursesList.find((element, index, arr) => element.id === idCourse);
+        let courseInfo = courses.find((element, index, arr) => element.id === idCourse);
         if (courseInfo) {
             setCourse(courseInfo);
-            console.log(courseInfo);
             setAuthors(getAuthors(courseInfo));
         } else {
             history.push('/404');

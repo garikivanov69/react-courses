@@ -4,43 +4,40 @@ import Button from '../Button/Button';
 import { Link } from 'react-router-dom';
 import './Login.css';
 import { useHistory } from "react-router-dom";
-import PropTypes from 'prop-types';
-
+import { loginService } from '../../store/servises';
+import { useDispatch } from 'react-redux';
+import { createActionAddUser } from '../../store/user/actionCreators';
 
 
 function Login(props) {
+    const dispatch = useDispatch();
     let history = useHistory();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
+    function successLoginCallback (data) {
+        let user = data.user;
+        user.isAuth = true;
+        user.token = data.result;
+        localStorage.setItem('courses-user', JSON.stringify(user));
+        dispatch(createActionAddUser(user));
+        history.push('/courses');
+    };
+
+    function emptyDataLoginCallback (data) {
+        data ? setErrorMessage(data.result) : setErrorMessage('Login process failed');
+    };
+
+    function errorLoginCallback () {
+        setErrorMessage('Login process failed');
+    };
+
     function login(event) {
         event.preventDefault();
-
         if(password && email) {
             const newUser = { password, email};
-
-            fetch('http://localhost:3000/login', {
-                method: 'POST',
-                body: JSON.stringify(newUser),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then((response) => {
-                console.log(response);
-                return response.json()    
-            }).then((data) => {
-                console.log(data);
-                if (data && data.successful) {
-                    localStorage.setItem('courses-user-token', data.result);
-                    localStorage.setItem('courses-user-name', data.user.name);
-                    props.setUserToken(data.result);
-                    history.push('/courses');
-                } else {
-                    data ? setErrorMessage(data.result) : setErrorMessage('Login process failed');
-                }
-            }).catch((error) => setErrorMessage('Login process failed'));
-
+            loginService(newUser, successLoginCallback, emptyDataLoginCallback, errorLoginCallback);
         } else {
             setErrorMessage('Please, fill in all fields');
         }
@@ -64,10 +61,6 @@ function Login(props) {
             </form>
         </div>
      );
-}
-
-Login.propTypes = {
-    setUserToken: PropTypes.func
 }
 
 export default Login;

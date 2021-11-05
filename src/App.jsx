@@ -8,23 +8,36 @@ import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import CourseInfo from './components/CourseInfo/CourseInfo';
 import SorryPage from './components/SorryPage/SorryPage';
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { createActionAddUser } from './store/user/actionCreators';
+
+
+const selectUser = state => state.user;
  
 function App() {
-  const [userToken, setUserToken] = useState(localStorage.getItem('courses-user-token'));
+  let user = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    let user = JSON.parse(localStorage.getItem('courses-user'));
+    if (user) {
+      dispatch(createActionAddUser(user));
+    }
+  }, []);
 
   return (
     <Router>
       <div className="Container">
-        <Header logoPath={logo} setUserToken={setUserToken} userToken={userToken}/>
+        <Header logoPath={logo} />
         <Switch>
-            <Route exact path="/login" render={() => userToken ? <Redirect to='/courses' /> : <Login setUserToken={setUserToken} userToken={userToken} />} />
+            <Route exact path="/login" render={() => user.isAuth ? <Redirect to='/courses' /> : <Login />} />
             <Route exact path="/courses" component={Courses} />
             <Route exact path="/courses/add" component={CreateCourse} />
             <Route exact path="/courses/:idCourse" component={CourseInfo} />
-            <Route exact path="/registration" render={() => userToken ? <Redirect to='/courses' /> : <Registration />} />
+            <Route exact path="/registration" render={() => user.isAuth ? <Redirect to='/courses' /> : <Registration />} />
             <Route exact path="/404" component={SorryPage} />
-            <Route render={() => userToken ? <Redirect to='/courses' /> : <Redirect to='/login' />} />
+            <Route render={() => user.isAuth ? <Redirect to='/courses' /> : <Redirect to='/login' />} />
         </Switch>
       </div>
     </Router>

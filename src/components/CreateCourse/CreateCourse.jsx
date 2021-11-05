@@ -1,22 +1,26 @@
-import React, {useState, useContext, useReducer} from 'react';
+import React, {useState, useReducer} from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import{CoursesContext} from '../../index.js';
 import Button from '../Button/Button.jsx';
 import Input from '../Input/Input.jsx';
 import './CreateCourse.css';
 import {useFormattingTimeFromMins} from '../../courseUtils.js';
 import { useHistory } from "react-router-dom";
-
+import { useSelector, useDispatch } from 'react-redux';
+import { createActionAddAuthor } from '../../store/authors/actionCreators';
+import { createActionAddCourse } from '../../store/courses/actionCreators';
+import { courseAdd } from '../../store/servises';
+import { selectAuthors } from '../../store/selectors';
 
 function CreateCourse(props) {
+    const dispatch = useDispatch();
     let history = useHistory();
+    let authors = useSelector(selectAuthors);
     const [duration, setDuration] = useState(0);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [newAuthorName, setNewAuthorName] = useState('');
 
-    const repository = useContext(CoursesContext);
-    const [authorList, setAuthorList] = useState(repository.mockedAuthorsList);
+    const [authorList, setAuthorList] = useState(authors);
 
     const [choosenAuthors, chooseAuthor] = useReducer(actionDispatch, []);
     const formatDuration = useFormattingTimeFromMins();
@@ -57,8 +61,8 @@ function CreateCourse(props) {
                 duration: duration,
                 authors: choosenAuthors.map((author) => author.id)
             };
-            repository.mockedCoursesList.push(newCourse);
-            history.push('/courses');
+            dispatch(createActionAddCourse(newCourse));
+            courseAdd(newCourse, () => history.push('/courses'), () => alert('Error'));
             return;
         }
         alert('Please, fill in all fields of a new course');
@@ -71,14 +75,14 @@ function CreateCourse(props) {
                 id: uuidv4(),
                 name: newAuthorName
             };
-            let flag = repository.mockedAuthorsList.length === authorList.length;
-            repository.mockedAuthorsList.push(author);
+            let flag = authors.length === authorList.length;
+            dispatch(createActionAddAuthor(author));
             if (!flag) {
                 let arr = Array.from(authorList);
                 arr.push(author);
                 setAuthorList(arr);
             } else {
-                setAuthorList(repository.mockedAuthorsList);
+                setAuthorList(authors);
             }
             setNewAuthorName('');
             return;
