@@ -6,9 +6,7 @@ import { useHistory } from "react-router-dom";
 import './CourseInfo.css';
 import {useFormattingTimeFromMins} from '../../courseUtils.js';
 import { useSelector } from 'react-redux';
-
-const selectCourses = state => state.courses;
-const selectAuthors = state => state.authors;
+import { selectCourses, selectAuthors } from '../../store/selectors';
 
 
 function CourseInfo(props) {

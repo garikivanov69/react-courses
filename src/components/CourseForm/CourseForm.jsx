@@ -1,29 +1,48 @@
-import React, {useState, useReducer} from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import React, {useState, useReducer, useEffect} from 'react';
 import Button from '../Button/Button.jsx';
 import Input from '../Input/Input.jsx';
-import './CreateCourse.css';
+import './CourseForm.css';
 import {useFormattingTimeFromMins} from '../../courseUtils.js';
-import { useHistory } from "react-router-dom";
-import { useSelector, useDispatch } from 'react-redux';
-import { createActionAddAuthor } from '../../store/authors/actionCreators';
-import { createActionAddCourse } from '../../store/courses/actionCreators';
-import { courseAdd } from '../../store/servises';
-import { selectAuthors } from '../../store/selectors';
+import { useParams, useHistory } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import store from '../../store/index';
+import { addAuthorThunkWrapper } from '../../store/thunk';
+import { selectAuthors, selectUser, selectCourses } from '../../store/selectors';
+import PropTypes from 'prop-types';
 
-function CreateCourse(props) {
-    const dispatch = useDispatch();
-    let history = useHistory();
+
+
+function CourseForm(props) {
+    let user = useSelector(selectUser);
     let authors = useSelector(selectAuthors);
+    let courses = useSelector(selectCourses);
+    let history = useHistory();
+    let { idCourse } = useParams();
     const [duration, setDuration] = useState(0);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [newAuthorName, setNewAuthorName] = useState('');
-
     const [authorList, setAuthorList] = useState(authors);
-
     const [choosenAuthors, chooseAuthor] = useReducer(actionDispatch, []);
     const formatDuration = useFormattingTimeFromMins();
+
+    useEffect(() => {
+        if (idCourse) {
+            let course = courses.find((element, index, array) => element.id === idCourse);
+            if (course) {
+                setTitle(course.title);
+                setDescription(course.description);
+                setDuration(course.duration);
+                authors.forEach((author) => {
+                    if (course.authors.includes(author.id)) { 
+                        chooseAuthor({actionType: 'addToCourse', author: author});
+                    }
+                });
+            } else {
+                history.push('/404');
+            }
+        }
+    }, []);
 
     function actionDispatch(choosenAuthors, data) {
         switch(data.actionType) {
@@ -48,65 +67,57 @@ function CreateCourse(props) {
         return resultArray;
     };
 
-    function createCourse (event) {
-        event.preventDefault();
-        if (title && description && duration && choosenAuthors.length) {         
-            let currentDate = new Date();
-            let courseDate = currentDate.getUTCDate() + '/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear();
-            let newCourse = {
-                id: uuidv4(),
-                title: title,
-                description: description,
-                creationDate: courseDate,
-                duration: duration,
-                authors: choosenAuthors.map((author) => author.id)
-            };
-            dispatch(createActionAddCourse(newCourse));
-            courseAdd(newCourse, () => history.push('/courses'), () => alert('Error'));
-            return;
-        }
-        alert('Please, fill in all fields of a new course');
-    };
-
     function createAuthor (event) {
         event.preventDefault();
         if (newAuthorName) {
             let author = {
-                id: uuidv4(),
                 name: newAuthorName
             };
-            let flag = authors.length === authorList.length;
-            dispatch(createActionAddAuthor(author));
-            if (!flag) {
-                let arr = Array.from(authorList);
-                arr.push(author);
-                setAuthorList(arr);
-            } else {
-                setAuthorList(authors);
-            }
+            let arr = Array.from(authorList);
+            // arr.push(author);
+            // setAuthorList(arr);
             setNewAuthorName('');
+            store.dispatch(addAuthorThunkWrapper(user.token, author, (newAuthor) => {
+                arr.push(newAuthor);
+                setAuthorList(arr);
+            }));
             return;
         }
 
         alert("Please, fill in the author's name field");
     };
 
+    function submitHandler(event) {
+        event.preventDefault();
+        if (title && description && duration && choosenAuthors.length) {         
+            let newCourse = {
+                title: title,
+                description: description,
+                duration: duration,
+                authors: choosenAuthors.map((author) => author.id)
+            };
+            props.submit(history, newCourse, idCourse);
+        } else {
+            alert('Please, fill in all fields of a new course');
+        }
+    };
+
     return ( 
         <div className="CreateCourse">
-            <form onSubmit={createCourse}>
+            <form onSubmit={submitHandler}>
                 <div className="flex container">
                     <div>
                         <label>
                             Title:
-                            <Input type="text"  placeholder="Enter title..." handleChange={(event) => setTitle(event.target.value)} />
+                            <Input type="text" value={title} placeholder="Enter title..." handleChange={(event) => setTitle(event.target.value)} />
                         </label>
                     </div>
-                    <Button className="button-courses" text="Create course" />
+                    <Button className="button-courses" text={props.buttonText} />
                 </div>
                 <div className="description container">
                     <label>
                         Description:
-                        <textarea placeholder="Enter description..." onChange={(event) => setDescription(event.target.value)} />
+                        <textarea value={description} placeholder="Enter description..." onChange={(event) => setDescription(event.target.value)} />
                     </label>
                 </div>
                 <section className="container flex">
@@ -123,7 +134,7 @@ function CreateCourse(props) {
                             <h3>Duration</h3>
                             <label>
                                 Duration:
-                                <Input id="duration" type="number"  placeholder="Enter Duration..." handleChange={(event) => setDuration(event.target.value)} />
+                                <Input id="duration" type="number" value={duration}  placeholder="Enter Duration..." handleChange={(event) => setDuration(Number(event.target.value))} />
                             </label>
                             <p className="font-larger" >Duration:</p> <p className="font-x-large font-bold">{formatDuration(duration)}</p> <p className="font-larger" >hours</p>
                         </div>
@@ -159,4 +170,9 @@ function CreateCourse(props) {
     );
 }
 
-export default CreateCourse;
+CourseForm.propTypes = {
+    submit: PropTypes.func,
+    buttonText: PropTypes.string
+}
+
+export default CourseForm;

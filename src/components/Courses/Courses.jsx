@@ -8,12 +8,15 @@ import {useFormattingTimeFromMins} from '../../courseUtils.js'
 import { useSelector } from 'react-redux';
 import { fetchCourses, fetchAuthors } from '../../store/servises';
 import store from '../../store/index';
-import { selectCourses, selectAuthors } from '../../store/selectors';
+import { selectCourses, selectAuthors, selectUser } from '../../store/selectors';
+import { getUserRoleThunkWrapper } from '../../store/thunk';
+
 
 
 function Courses() {
     let courses = useSelector(selectCourses);
     let authors = useSelector(selectAuthors);
+    let user = useSelector(selectUser);
     const [arrayOfCourses, setArrayOfCourses] = useState(courses.slice());
     const [searchKey, setSearchKey] = useState('');
     const getTimeFromMins = useFormattingTimeFromMins();
@@ -21,6 +24,9 @@ function Courses() {
     useEffect(() => {
         store.dispatch(fetchCourses);
         store.dispatch(fetchAuthors);
+        if (user.token) {
+            store.dispatch(getUserRoleThunkWrapper(user.token));
+        }
     }, []);
 
     let getAuthors = function (course) {
@@ -40,7 +46,7 @@ function Courses() {
         <div>
             <div className="Courses-search-container">
                 <Search searchKey={searchKey} setSearchKey={setSearchKey} />
-                <Link to="/courses/add" ><Button text="Create course" /></Link>
+                {user.role === 'admin' ? <Link to="/courses/add" ><Button text="Create course" /></Link> : ''}
             </div>
             <div>
                 <ul className="Courses">

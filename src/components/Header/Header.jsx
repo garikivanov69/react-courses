@@ -4,20 +4,20 @@ import Button from '../Button/Button';
 import Logo from '../Logo/Logo';
 import { useHistory } from "react-router-dom";
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { createActionDeleteUser } from '../../store/user/actionCreators';
+import { useSelector } from 'react-redux';
 import { selectUser } from '../../store/selectors';
+import { logoutThunkWrapper } from '../../store/thunk';
+import store from '../../store/index';
+
+
 
 function Header(props) {
     let user = useSelector(selectUser);
     let history = useHistory();
-    const dispatch = useDispatch();
 
     function logout(event) {
         event.preventDefault();
-        localStorage.removeItem('courses-user');
-        dispatch(createActionDeleteUser());
-        history.push("/login");
+        store.dispatch(logoutThunkWrapper(user.token, history));
     };
 
     return ( 

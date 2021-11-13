@@ -20,7 +20,7 @@ function Login(props) {
         let user = data.user;
         user.isAuth = true;
         user.token = data.result;
-        localStorage.setItem('courses-user', JSON.stringify(user));
+        localStorage.setItem('courses-user', user.token);
         dispatch(createActionAddUser(user));
         history.push('/courses');
     };

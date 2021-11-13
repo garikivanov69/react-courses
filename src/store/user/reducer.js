@@ -4,7 +4,8 @@ const initialState = {
     isAuth: false,
     name: '',
     email: '',
-    token: ''
+    token: '',
+    role: ''
 };
 
 const userReducer = (state = initialState, action) => {
@@ -14,6 +15,10 @@ const userReducer = (state = initialState, action) => {
             return payload;
         case USER_ACTION_TYPES.DELETE_USER:
             return initialState;
+        case USER_ACTION_TYPES.SET_ROLE:
+            let user = Object.assign({}, state);
+            user.role = payload
+            return user;
         default:
             return state;
     }

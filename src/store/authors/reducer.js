@@ -8,8 +8,7 @@ const authorsReducer = (state = initialState, action) => {
         case AUTHOR_ACTION_TYPES.GET_AUTHORS:
             return payload;
         case AUTHOR_ACTION_TYPES.ADD_AUTHOR:
-            state.push(payload);
-            return state;
+            return state.concat(payload);
         default:
             return state;
     }

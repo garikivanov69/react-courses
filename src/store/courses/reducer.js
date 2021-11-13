@@ -10,10 +10,9 @@ const coursesReducer = (state = initialState, action) => {
         case COURSES_ACTION_TYPES.DELETE_COURSE:
             return state.filter((course) => course.id !== payload); 
         case COURSES_ACTION_TYPES.ADD_COURSE:
-            state.push(payload);
-            return state;
+            return state.concat(payload);
         case COURSES_ACTION_TYPES.UPDATE_COURSE:
-            return state;
+            return state.map((course) => course.id === payload.id ? payload : course);
         default:
             return state;
     }

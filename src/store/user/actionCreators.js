@@ -13,3 +13,10 @@ export const createActionAddUser = (value) => {
         payload: value
     };
 }
+
+export const createActionSetUserRole = (value) => {
+    return { 
+        type: USER_ACTION_TYPES.SET_ROLE,
+        payload: value
+    };
+}

@@ -5,12 +5,15 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import pencil from './pencil.svg';
 import basket from './basket.svg';
-import { useDispatch } from 'react-redux';
-import { createActionDeleteCourse } from '../../store/courses/actionCreators';
+import { selectUser } from '../../store/selectors';
+import { useSelector } from 'react-redux';
+import store from '../../store/index';
+import { deleteCourseThunkWrapper } from '../../store/thunk';
+
 
 
 function CourseCard(props) {
-    const dispatch = useDispatch();
+    let user = useSelector(selectUser);
 
     return ( 
         <div className="CourseCard">
@@ -28,15 +31,19 @@ function CourseCard(props) {
                     <dd>{props.creationDate}</dd>
                 </dl>
                 <Link to={"/courses/" + props.id} ><Button text="Show course" /></Link>
-                <Button >
-                    <img src={pencil} alt="Edit"/>
-                </Button>
-                <Button onClick={(event) => {
-                    dispatch(createActionDeleteCourse(props.id));
-                    props.setCourses(props.courses.filter((course) => course.id !== props.id));
-                    }}>
-                    <img src={basket} alt="Delete" />
-                </Button>
+                {user.role === 'admin' ? 
+                    <Link to={"/courses/update/" + props.id} >
+                        <Button >
+                            <img src={pencil} alt="Edit"/>
+                        </Button>
+                    </Link> : ''}
+                {user.role === 'admin' ?
+                    <Button onClick={(event) => {
+                        store.dispatch(deleteCourseThunkWrapper(user.token, props.id));
+                        props.setCourses(props.courses.filter((course) => course.id !== props.id));
+                        }}>
+                        <img src={basket} alt="Delete" />
+                    </Button> : ''}
             </div>
         </div>
      );
