@@ -166,3 +166,5 @@ export const getUserInfoService = (token, successCallback, emptyDataCallback, er
         }
     }).catch((error) => errorCallback());
 }
+
+

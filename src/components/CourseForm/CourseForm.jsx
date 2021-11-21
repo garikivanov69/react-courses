@@ -5,10 +5,11 @@ import './CourseForm.css';
 import {useFormattingTimeFromMins} from '../../courseUtils.js';
 import { useParams, useHistory } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import store from '../../store/index';
 import { addAuthorThunkWrapper } from '../../store/thunk';
 import { selectAuthors, selectUser, selectCourses } from '../../store/selectors';
 import PropTypes from 'prop-types';
+import { useStore } from 'react-redux';
+
 
 
 
@@ -18,6 +19,7 @@ function CourseForm(props) {
     let courses = useSelector(selectCourses);
     let history = useHistory();
     let { idCourse } = useParams();
+    const store = useStore();
     const [duration, setDuration] = useState(0);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -74,13 +76,12 @@ function CourseForm(props) {
                 name: newAuthorName
             };
             let arr = Array.from(authorList);
-            // arr.push(author);
-            // setAuthorList(arr);
             setNewAuthorName('');
             store.dispatch(addAuthorThunkWrapper(user.token, author, (newAuthor) => {
                 arr.push(newAuthor);
                 setAuthorList(arr);
             }));
+
             return;
         }
 
@@ -143,10 +144,10 @@ function CourseForm(props) {
                         <div>
                             <h3>Authors</h3>
                             <ul>
-                                {authorList.map((author) => <li key={author.id}>
+                                {authorList.map((author) => <li key={author.id} data-testid="Author list">
                                         <div className="flex-center-wrapper">
                                             <p className="author-name">{author.name}</p>
-                                            <Button className="button-courses" onClick={() => chooseAuthor({actionType: 'addToCourse', author: author})} text="Add author" />
+                                            <Button className="button-courses" onClick={() => chooseAuthor({actionType: 'addToCourse', author: author})} text="Add" />
                                         </div>
                                     </li>)}
                             </ul>
@@ -155,10 +156,10 @@ function CourseForm(props) {
                             <h3>Course authors</h3>
                             <ul>
                             {choosenAuthors.length ? choosenAuthors.map((author) => 
-                                    <li key={author.id}>
+                                    <li key={author.id} data-testid="Course's author list">
                                         <div className="flex-center-wrapper">
                                             <p className="author-name">{author.name}</p>
-                                            <Button className="button-courses" onClick={() => chooseAuthor({actionType: 'deleteFromCourse', author: author})} text="Delete author" />
+                                            <Button className="button-courses" onClick={() => chooseAuthor({actionType: 'deleteFromCourse', author: author})} text="Delete" />
                                         </div>
                                     </li>) : <li>Author list is empty</li>}
                             </ul>
